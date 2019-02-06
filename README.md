@@ -2,7 +2,7 @@
 
 ThemeMiner is the missing piece for styled-components.
 
-It makes to create complex design systems with `styled-components` very easy and readable.
+It makes it very easy and readable, to create complex design systems in `React` with `styled-components`.
 
 ThemeMiner will consume the `theme` provided with `<ThemeProvider />`.
 

@@ -1,0 +1,23 @@
+{
+  "name": "theme-miner",
+  "version": "1.0.0",
+  "description": "ThemeMiner is the missing piece for styled-components.",
+  "main": "index.js",
+  "repository": "https://github.com/doubco/theme-miner.git",
+  "author": "Berkay Sargın <berkaey@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "wtf-is-this": "^0.0.2"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.0.1",
+    "babel-plugin-styled-components": "^1.10.0",
+    "babel-plugin-transform-define": "^1.3.1",
+    "eslint": "^5.13.0",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-prettier": "^3.0.1",
+    "eslint-plugin-react": "^7.12.4",
+    "prettier": "^1.16.4",
+    "raw-loader": "^1.0.0"
+  }
+}

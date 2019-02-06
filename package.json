@@ -2,22 +2,42 @@
   "name": "theme-miner",
   "version": "1.0.0",
   "description": "ThemeMiner is the missing piece for styled-components.",
-  "main": "index.js",
+  "author": "Doub.co  <hi@doub.co>",
+  "main": "lib/index.js",
+  "commonjs": "lib/index.cjs.js",
+  "module": "lib/index.es.js",
   "repository": "https://github.com/doubco/theme-miner.git",
-  "author": "Berkay Sargın <berkaey@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "rollup -c -w",
+    "build": "rollup -c",
+    "prepare": "npm run build"
+  },
   "dependencies": {
     "wtf-is-this": "^0.0.2"
   },
+  "keywords": [
+    "theme",
+    "styled",
+    "components",
+    "react",
+    "helper"
+  ],
   "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/plugin-proposal-class-properties": "^7.3.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.3.2",
+    "@babel/preset-env": "^7.3.1",
     "babel-eslint": "^10.0.1",
-    "babel-plugin-styled-components": "^1.10.0",
-    "babel-plugin-transform-define": "^1.3.1",
     "eslint": "^5.13.0",
     "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-prettier": "^3.0.1",
-    "eslint-plugin-react": "^7.12.4",
     "prettier": "^1.16.4",
-    "raw-loader": "^1.0.0"
+    "rollup-plugin-babel": "^4.3.2",
+    "rollup-plugin-commonjs": "^9.2.0",
+    "rollup-plugin-node-resolve": "^4.0.0",
+    "rollup-plugin-peer-deps-external": "^2.2.0",
+    "rollup-plugin-url": "^2.2.0"
   }
 }

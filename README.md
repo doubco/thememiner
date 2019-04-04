@@ -12,6 +12,8 @@ ThemeMiner will consume the `theme` provided with `<ThemeProvider />`.
 
 ## Setup
 
+To manage your design system and all the other variables first we create a theme file.
+
 theme.js
 
 ```js
@@ -42,19 +44,19 @@ export const theme = {
 
 // these are interactives, we will use it as variables
 const interactives = {
-  depth: {
+  depth: { // or "myDepths"
     options: ["base", "flat", "raised", "overlay", "superior", "declaration"],
     default: "flat"
   },
-  size: {
+  size: { // or "s"
     options: ["small", "normal", "large"],
     default: "normal"
   },
-  variant: {
+  variant: { // or "color"
     options: ["black", "white", "primary", "destructive", "positive"],
     default: "primary",
     variants: {
-      key: "tone",
+      key: "tone", // or "shade"
       options: ["lighter", "light", "main", "dark", "darker"],
       default: "main"
     }
@@ -62,12 +64,12 @@ const interactives = {
 };
 
 const options = {
-  useTransient: true, // adds $ to interactives like variant becames $variant
+  useTransient: true, // adds $ to interactives e.g. variant becames $variant
   useOptions: true, // allow us to use $black addition to $variant="black"
   useVariants: true, // allow us to use $light addition to $tone="light"
   // PS: don't use same identifiers both inside options and variants
   properties: [
-    // always will be included in uiProps
+    // always will be included in uiProps and passed to styled components
     "$color",
     "$passive",
     "$gutter",
@@ -94,6 +96,8 @@ const UI = new ThemeMiner({
 export default UI;
 ```
 
+Now we can pass our theme file to the provider.
+
 App.js
 
 ```js
@@ -111,7 +115,9 @@ const App = () => {
 export default App;
 ```
 
-BaseComponent.js (recommended)
+This step is very recommended but not mandatory. A base component will expose us some api e.g. `this.ui` or `this.closest`
+
+BaseComponent.js
 
 ```js
 import UI from "../theme";
@@ -162,7 +168,7 @@ export const StyledButton = styled.div`
   color ${_`variant.contrast`};
   padding: ${mixin("multiply", 2)`size.padding``px`}
   text-decoration: ${cond({
-    if: is("props.active",true) // or "props.active" as a string,
+    if: is.eq("props.active",true) // or "props.active" or _`props.active` as a string,
     // we could do this too; if: or(is("props.$variant","positive"),"props.active")
     then: "underline",
     else: null // optional
@@ -210,7 +216,129 @@ export const Home = () => {
 };
 ```
 
-## Helpers
+## API
+
+### Global Methods
+
+#### scoped
+
+creates scoped helpers from `theme.scope_name`
+
+`scoped("scope_name")`
+
+returns two helper
+
+`{ _, mixin }`
+
+#### style
+
+returns resolved UI props and theme variables for styling
+
+`` style(`buttons.size.padding`, ({ button, theme, active, props }) => {}) ``
+
+#### \_
+
+same as style
+
+`` _`button.size.padding` ``
+
+#### calc
+
+calculates data in template literals, it's handy to use in conditions and unitless operations
+
+`` calc(`${_`size.padding`} * 2`) ``
+
+#### mixin
+
+use global mixins defined in theme file.
+
+`mixin("some_helper",1,2,3)("scope_name")(x=>{ // do something})`
+
+#### cond
+
+helps define conditions in styled-components
+
+`cond({if: "props.active", then: "10px", else: "8px"})`
+
+`cond({if: "props.active == true", then: "10px", else: "8px"})`
+
+`cond({if: "!props.active", then: "10px", else: "8px"})`
+
+`cond({if: "props.height > 10", then: "10px", else: "8px"})`
+
+`` cond({if: _`props.height`, then: (p)=> p.height , else: "0"}) ``
+
+`cond({if: is.ne("props.status","error"), then: "blue" , else: "red"})`
+
+`cond({if: (p)=> p.height/2 == 10, then: "foo" , else: "bar"})`
+
+`cond({if: and("props.active",is.eq("status","error")), then: "foo" , else: "bar"})`
+
+### Helper Methods
+
+#### active
+
+return all active interactive keys and their variants if exists.
+
+`active(this.props)`
+
+#### properties
+
+collect all interactive variables and specified props.
+
+`properties(this.props, ["align","active","etc"])`
+
+#### closest
+
+collect all interactive variables and specified props.
+
+`closest("size", active(this.props).size.key, -1)`
+
+`closest("color", active(this.props).color, 1, true)`
+
+`closest("color", active(this.props).color.variant, -1, true)`
+
+### Scoped Methods
+
+#### \_
+
+same as global style or \_ but it is scoped, so there is no need for scope name in dot notation.
+
+`` _`size.padding` ``
+
+#### mixin
+
+same as global mixins but scoped.
+
+`` mixin`variant.active`(color=> transparentize(0.9,color)) ``
+
+### Condition Methods
+
+`or(a,b)` or helper for conditions
+
+`and(a,b)` and helper for conditions
+
+`is.eq(key,value)` checks if it is equal
+
+`is.ne(key,value)` checks if it is not equal
+
+`is.nset(key)` checks if it is not exists
+
+`is.set(key)` checks if it is exists
+
+`is.in(key,value)` checks if it is included
+
+`is.nin(key,value)` checks if it is not included
+
+`is.lt(key,value)` checks if it is little than
+
+`is.lte(key,value)` checks if it is equal or little than
+
+`is.gt(key,value)` checks if it is greater than
+
+`is.gte(key,value)` checks if it is equal or greater than
+
+`is.color(key)` checks if it is color
 
 ---
 

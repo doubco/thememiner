@@ -8,6 +8,10 @@ import {
   isColor
 } from "wtf-is-this";
 
+import media from "./mixins/media";
+import paint from "./mixins/paint";
+import gutter from "./mixins/gutter";
+
 const ref = (obj, str) => {
   if (isString(str) && isObject(obj)) {
     str = str.split(".");
@@ -70,6 +74,11 @@ class ThemeMiner {
         this.mixins[m] = props.mixins[m];
       });
     }
+
+    this.mixins.media = media(theme, options);
+    this.mixins.paint = paint(theme, options);
+    this.mixins.margin = gutter("margin", theme, options);
+    this.mixins.padding = gutter("padding", theme, options);
 
     this.key = this.key.bind(this);
     this.vars = this.vars.bind(this);

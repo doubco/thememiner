@@ -23,6 +23,29 @@ const ref = (obj, str) => {
 
 class ThemeMiner {
   constructor(props = {}) {
+    this.setProps(props);
+
+    this.key = this.key.bind(this);
+    this.vars = this.vars.bind(this);
+    this.handlePropTypes = this.handlePropTypes.bind(this);
+
+    this.style = this.style.bind(this);
+    this._ = this._.bind(this);
+    this.scoped = this.scoped.bind(this);
+    this.active = this.active.bind(this);
+    this.mixin = this.mixin.bind(this);
+    this.calc = this.calc.bind(this);
+
+    this.properties = this.properties.bind(this);
+    this.closest = this.closest.bind(this);
+
+    this.matchCondition = this.matchCondition.bind(this);
+    this.or = this.or.bind(this);
+    this.and = this.and.bind(this);
+    this.cond = this.cond.bind(this);
+  }
+
+  setProps(props) {
     const theme = props.theme || {};
 
     const options = {
@@ -70,25 +93,6 @@ class ThemeMiner {
         this.mixins[m] = props.mixins[m];
       });
     }
-
-    this.key = this.key.bind(this);
-    this.vars = this.vars.bind(this);
-    this.handlePropTypes = this.handlePropTypes.bind(this);
-
-    this.style = this.style.bind(this);
-    this._ = this._.bind(this);
-    this.scoped = this.scoped.bind(this);
-    this.active = this.active.bind(this);
-    this.mixin = this.mixin.bind(this);
-    this.calc = this.calc.bind(this);
-
-    this.properties = this.properties.bind(this);
-    this.closest = this.closest.bind(this);
-
-    this.matchCondition = this.matchCondition.bind(this);
-    this.or = this.or.bind(this);
-    this.and = this.and.bind(this);
-    this.cond = this.cond.bind(this);
   }
 
   /*

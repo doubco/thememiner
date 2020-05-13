@@ -1,8 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-// import { useUI } from "theme-miner/lib/react/styled-components";
-import { useUI } from "../react/styled-components";
+import { useUI } from "theme-miner/lib/react/styled-components";
 
 // styled components
 import { UI } from "../ui";

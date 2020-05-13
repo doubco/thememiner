@@ -13,7 +13,7 @@ const ref = (obj, str) => {
     str = str.split(".");
 
     for (let i = 0; i < str.length; i++) {
-      obj = obj[str[i]] || { empty: true };
+      obj = obj[str[i]] ? obj[str[i]] : obj[str[i]] === 0 ? 0 : { empty: true };
     }
     if (obj && obj.empty) return null;
     return obj;
@@ -77,12 +77,21 @@ class ThemeMiner {
       ...props.interactives,
     };
 
+    let __interactives = {};
+
+    Object.keys(interactives).forEach((k) => {
+      __interactives[k] = theme[k];
+    });
+
     this.props = {
       keys: {
         theme: Object.keys(theme),
         interactives: Object.keys(interactives),
       },
-      theme,
+      theme: {
+        ...theme,
+        __interactives,
+      },
       options,
       interactives,
     };
@@ -112,6 +121,7 @@ class ThemeMiner {
   vars(key, props, active) {
     const { theme, options } = this.props;
     let prepared = {};
+
     if (theme[key]) {
       const keys = Object.keys(active);
       for (const k in theme[key]) {
@@ -134,6 +144,7 @@ class ThemeMiner {
         }
       }
     }
+
     return prepared;
   }
 
@@ -240,11 +251,17 @@ class ThemeMiner {
         // anaylize key and get optimized props
         let scope;
         if (type == "array" || type == "string") {
+          // use prefix if the parent key is in interactives
+          if (theme.__interactives[input.split(".")[0]]) {
+            input = `__interactives.${input}`;
+          }
           scope = input;
         }
+
         if (scope) {
           scope = scope.split(".")[0];
           if (theme[scope]) keys = scope;
+
           if (scope == "props") keys = 0;
           if (scope == "theme") keys = 0;
         }

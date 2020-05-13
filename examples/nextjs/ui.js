@@ -1,5 +1,4 @@
-// import { ThemeMiner } from "theme-miner";
-import ThemeMiner from "./ThemeMiner";
+import { ThemeMiner } from "theme-miner";
 
 const family = {
   default: `"Inter", sans-serif`,

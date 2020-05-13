@@ -21,15 +21,11 @@ const processTheme = (instance, themeKey) => {
 };
 
 export const UIProvider = (props) => {
-  const { instance } = props;
+  const { instance, theme, themes } = props;
 
-  const { paletteKey } = instance.props.options;
+  const { paletteKey, defaultTheme } = instance.props.options;
 
-  const palette = instance.props.theme[paletteKey];
-
-  const [themeKey, setTheme] = useState(
-    palette[props.theme] ? props.theme : instance.props.defaultTheme,
-  );
+  const [themeKey, setTheme] = useState(themes[theme] ? theme : defaultTheme);
 
   const [updating, setUpdating] = useState(false);
 
@@ -43,7 +39,7 @@ export const UIProvider = (props) => {
     [instance.key(paletteKey)]: themeKey,
   };
 
-  const mode = palette[props.theme].mode;
+  const mode = themes[theme].mode;
 
   return (
     <Context.Provider
@@ -61,7 +57,6 @@ export const UIProvider = (props) => {
           return {
             props,
             themeProps,
-            rawTheme: instance.props.theme,
             theme: generatedTheme.current,
             themeKey,
             mode,
@@ -113,6 +108,8 @@ export const UIConsumer = Context.Consumer;
 export const UIContext = Context;
 
 export const useUI = (...args) => {
-  const context = useContext(UIContext).generateUI(...args);
+  const ctx = useContext(UIContext);
+
+  const context = ctx ? ctx.generateUI(...args) : {};
   return context;
 };

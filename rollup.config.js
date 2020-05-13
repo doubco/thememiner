@@ -6,29 +6,57 @@ import url from "rollup-plugin-url";
 
 import pkg from "./package.json";
 
-export default {
-  input: "./src/index.js",
-  output: [
-    {
-      file: pkg.main,
-      format: "cjs",
-      sourcemap: true,
-      exports: "named"
-    },
-    {
-      file: pkg.module,
-      format: "es",
-      sourcemap: true,
-      exports: "named"
-    }
-  ],
-  plugins: [
-    external(),
-    url(),
-    babel({
-      exclude: "node_modules/**"
-    }),
-    resolve(),
-    commonjs()
-  ]
-};
+export default [
+  {
+    input: "./src/index.js",
+    output: [
+      {
+        file: pkg.main,
+        format: "cjs",
+        sourcemap: true,
+        exports: "named",
+      },
+      {
+        file: pkg.module,
+        format: "es",
+        sourcemap: true,
+        exports: "named",
+      },
+    ],
+    plugins: [
+      external(),
+      url(),
+      babel({
+        exclude: "node_modules/**",
+      }),
+      resolve(),
+      commonjs(),
+    ],
+  },
+  {
+    input: "./src/react/styled-components/index.js",
+    output: [
+      {
+        file: pkg.react["styled-components"].main,
+        format: "cjs",
+        sourcemap: true,
+        exports: "named",
+      },
+      {
+        file: pkg.react["styled-components"].module,
+        format: "es",
+        sourcemap: true,
+        exports: "named",
+      },
+    ],
+    plugins: [
+      external(),
+      url(),
+      babel({
+        exclude: "node_modules/**",
+      }),
+      resolve(),
+      commonjs(),
+    ],
+  },
+];

@@ -6,6 +6,7 @@ import React, {
   useContext,
 } from "react";
 import { ThemeProvider } from "styled-components";
+import { UI } from "../../../examples/nextjs/ui";
 
 const Context = createContext();
 
@@ -23,25 +24,38 @@ const processTheme = (instance, themeKey) => {
 export const UIProvider = (props) => {
   const { instance, theme } = props;
 
-  const { paletteKey, themes } = instance.props.options.theming;
+  const { theming = {} } = instance.props.options || {};
+  const { paletteKey, themes } = theming;
 
-  const defaultTheme = Object.keys(themes)[0];
+  if (!paletteKey) {
+    throw Error("Please add 'paletteKey' property to options.theming.");
+  }
 
-  const [themeKey, setTheme] = useState(themes[theme] ? theme : defaultTheme);
+  if (!themes) {
+    throw Error("Please add 'themes' object to options.theming.");
+  }
+
+  if (!theming.default) {
+    throw Error("Please add 'default' property to options.theming.");
+  }
+
+  const [themeKey, setTheme] = useState(
+    themes[theme] ? theme : theming.default,
+  );
 
   const [updating, setUpdating] = useState(false);
-
-  const generatedTheme = useRef(processTheme(instance, themeKey));
-
-  useEffect(() => {
-    generatedTheme.current = processTheme(instance, themeKey);
-  }, [instance, themeKey]);
 
   const themeProps = {
     [instance.key(paletteKey)]: themeKey,
   };
 
-  const mode = themes[theme].mode;
+  const mode = themes[themeKey].mode;
+
+  useEffect(() => {
+    generatedTheme.current = processTheme(instance, themeKey);
+  }, [instance, themeKey]);
+
+  const generatedTheme = useRef(processTheme(instance, themeKey));
 
   return (
     <Context.Provider
@@ -87,6 +101,8 @@ export const UIProvider = (props) => {
               if (themes[theme]) {
                 setUpdating(true);
                 setTheme(theme);
+
+                instance.setTheme(theme);
 
                 setTimeout(() => {
                   setUpdating(false);

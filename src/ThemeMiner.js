@@ -45,6 +45,21 @@ class ThemeMiner {
     this.cond = this.cond.bind(this);
   }
 
+  setTheme(name) {
+    this.currentTheme = name;
+  }
+
+  checkTheme(theme) {
+    return this.getTheme(theme) ? true : false;
+  }
+
+  getTheme(name = this.currentTheme) {
+    const { paletteKey } = this.props.options.theming || {};
+    if (!paletteKey) throw Error("Please add 'paletteKey' to options.theming.");
+    const palette = this.props.theme[paletteKey];
+    return palette[name];
+  }
+
   setProps(props = {}) {
     const theme = props.theme || {};
 
@@ -72,6 +87,11 @@ class ThemeMiner {
       },
       ...props.options,
     };
+
+    if (props.options.theming) {
+      this.defaultTheme = props.options.theming.default;
+      this.setTheme(props.options.theming.default);
+    }
 
     const interactives = {
       ...props.interactives,

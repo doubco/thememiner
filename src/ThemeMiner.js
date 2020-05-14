@@ -136,7 +136,12 @@ class ThemeMiner {
                 `${key}.${k}.${a.key}.${a.variant}`,
               );
             } else {
-              prepared[k] = ref(theme, `${key}.${k}.${a.key}`);
+              // prepared[k] = ref(theme, `${key}.${k}.${a.key}`);
+              prepared[k] = ref(theme, `${key}.${k}`) || {};
+              prepared[k][options.activeKey] = ref(
+                theme,
+                `${key}.${k}.${a.key}`,
+              );
             }
           }
         } else {
@@ -342,10 +347,17 @@ class ThemeMiner {
   mixin(mixin, ...args) {
     return (key) => {
       return (props) => {
-        const run = (p) => {
-          return this.mixins[mixin](this.style(key)(p), ...args);
-        };
-        return this.handlePropTypes(props, run);
+        return this.handlePropTypes(props, (p) => {
+          const value = this.style(key)(p);
+          const instance = this;
+          if (this.mixins[mixin]) {
+            return this.mixins[mixin](instance, props, value, ...args);
+          } else {
+            throw Error(
+              `Missing mixin: ${mixin}. Please add this mixin function to mixins.${mixin} in your ThemeMiner instance.`,
+            );
+          }
+        });
       };
     };
   }
@@ -356,25 +368,7 @@ class ThemeMiner {
     Examples:
     Theme.properties(this.props)
   */
-  properties(props = {}, others = []) {
-    const { interactives, options } = this.props;
-    let keys = [];
-
-    Object.keys(interactives).forEach((key) => {
-      let i = interactives[key];
-      keys = [...keys, key];
-
-      if (options.useOptions) {
-        keys = [...keys, ...i.options];
-        if (i.variants) {
-          keys = [...keys, i.variants.key, ...i.variants.options];
-        }
-      }
-    });
-
-    keys = keys.map((i) => this.key(i));
-    keys = [...keys, ...options.properties, ...others];
-
+  cherryPickPropKeys(keys, props) {
     let newProps = {};
 
     keys.forEach((k) => {
@@ -390,6 +384,45 @@ class ThemeMiner {
     });
 
     return newProps;
+  }
+
+  properties(props = {}, localKeys = [], asObject) {
+    const { interactives, options } = this.props;
+    let keys = [];
+    let globalKeys = [...options.properties];
+
+    let interactivesKeys = [];
+
+    Object.keys(interactives).forEach((key) => {
+      let i = interactives[key];
+      interactivesKeys = [...interactivesKeys, key];
+
+      if (options.useOptions) {
+        interactivesKeys = [...interactivesKeys, ...i.options];
+        if (i.variants) {
+          interactivesKeys = [
+            ...interactivesKeys,
+            i.variants.key,
+            ...i.variants.options,
+          ];
+        }
+      }
+    });
+
+    interactivesKeys = interactivesKeys.map((i) => this.key(i));
+
+    keys = [...interactivesKeys, ...localKeys];
+
+    if (asObject) {
+      return {
+        props: this.cherryPickPropKeys(keys, props),
+        global: this.cherryPickPropKeys(globalKeys, props),
+        local: this.cherryPickPropKeys(localKeys, props),
+        interactives: this.cherryPickPropKeys(interactivesKeys, props),
+      };
+    } else {
+      return this.cherryPickPropKeys(keys, props);
+    }
   }
 
   /*

@@ -1,4 +1,12 @@
 import { ThemeMiner } from "theme-miner";
+// import ThemeMiner from "./theme-miner";
+
+import { css } from "styled-components";
+import tinycolor from "tinycolor2";
+
+const random = (min, max) => {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+};
 
 const family = {
   default: `"Inter", sans-serif`,
@@ -204,9 +212,20 @@ const interactives = {
 const options = {
   useOptions: false,
   useVariants: false,
-  paletteKey: "palette",
+  // globally auto passed properties
   properties: ["$debug"],
-  defaultTheme: "white",
+  theming: {
+    paletteKey: "palette",
+    themes: {
+      white: {
+        default: true,
+        mode: "light",
+      },
+      black: {
+        mode: "dark",
+      },
+    },
+  },
 };
 
 const ui = new ThemeMiner({
@@ -229,6 +248,152 @@ const ui = new ThemeMiner({
     // }
 
     return newTheme;
+  },
+  mixins: {
+    debug: (
+      instance,
+      props,
+      value,
+      { useProps, disco = false, style, width } = {},
+    ) => {
+      const styles = ["dashed", "dotted", "solid"];
+
+      // When disco mode on you will get 'Warning: Prop `className` did not match. Server' error on client side
+      const borderWidth = width || 2;
+      const borderStyle = disco ? styles[random(0, 2)] : style || "solid";
+      const borderColor = disco
+        ? `rgb(${random(0, 255)}, ${random(0, 255)}, ${random(0, 255)})`
+        : value
+        ? value
+        : `red`;
+
+      let nextValue = css`
+        border: ${borderWidth}px ${borderStyle} ${borderColor};
+      `;
+
+      if (useProps && !p.$debug) {
+        nextValue = "";
+      }
+
+      return nextValue;
+    },
+    asActive: (instance, props, value, diff = 1) => {
+      const { theme, $negative, $color } = props;
+      const palettes = theme.palette;
+
+      // this is the default color
+      let nextValue = value;
+
+      if ($color) {
+        if ($negative) {
+          // reverse color if there is $negative in props
+          // IMPROVE: we can calculate and select a different readable color when hover, will leave it like this for this example
+          return tinycolor($color).getLuminance() > 0.5 ? "#000" : "#fff";
+        } else {
+          return tinycolor($color).darken(10 * Math.abs(diff));
+        }
+      } else {
+        const { palette } = instance.active(props);
+        const { key, variant } = palette;
+
+        const nextVariant = instance.closest("palette", variant, diff, true);
+
+        if ($negative) {
+          nextValue = palettes[key].contrast[nextVariant];
+        } else {
+          nextValue = palettes[key][nextVariant];
+        }
+      }
+
+      return nextValue;
+    },
+    // first 3 paramaters are coming from theme-miner, others are coming from your mixins paramaters e.g. mixin("asHover", -2)`palette.active`
+    asHover: (instance, props, value, diff = -1) => {
+      const { theme, $negative, $color } = props;
+      const palettes = theme.palette;
+
+      // this is the default color
+      let nextValue = value;
+
+      if ($color) {
+        if ($negative) {
+          // reverse color if there is $negative in props
+          // IMPROVE: we can calculate and select a different readable color when hover, will leave it like this for this example
+          return tinycolor($color).getLuminance() > 0.5 ? "#000" : "#fff";
+        } else {
+          return tinycolor($color).lighten(10 * Math.abs(diff));
+        }
+      } else {
+        const { palette } = instance.active(props);
+        const { key, variant } = palette;
+
+        const nextVariant = instance.closest("palette", variant, diff, true);
+
+        if ($negative) {
+          nextValue = palettes[key].contrast[nextVariant];
+        } else {
+          nextValue = palettes[key][nextVariant];
+        }
+      }
+
+      return nextValue;
+    },
+    paint: (instance, props, value, ...args) => {
+      const { theme, $negative, $color } = props;
+      const palettes = theme.palette;
+
+      // this is the default color
+      let nextValue = value;
+
+      // support direct $color if there is $color in props
+      if ($color) {
+        if ($negative) {
+          // reverse color if there is $negative in props
+          return tinycolor($color).getLuminance() > 0.5 ? "#000" : "#fff";
+        } else {
+          return $color;
+        }
+      } else {
+        const { palette } = instance.active(props);
+
+        if ($negative) {
+          // reverse color if there is $negative in props
+          const { key, variant } = palette;
+          nextValue = palettes[key].contrast[variant];
+        }
+      }
+
+      return nextValue;
+    },
+    paintFG: (instance, props, value, ...args) => {
+      const { theme, $color } = props;
+      const palettes = theme.palette;
+
+      const $negative = !props.$negative;
+
+      // this is the default color
+      let nextValue = value;
+
+      // support direct $color if there is $color in props
+      if ($color) {
+        if ($negative) {
+          // reverse color if there is $negative in props
+          return tinycolor($color).getLuminance() > 0.5 ? "#000" : "#fff";
+        } else {
+          return $color;
+        }
+      } else {
+        const { palette } = instance.active(props);
+
+        if ($negative) {
+          // reverse color if there is $negative in props
+          const { key, variant } = palette;
+          nextValue = palettes[key].contrast[variant];
+        }
+      }
+
+      return nextValue;
+    },
   },
 });
 

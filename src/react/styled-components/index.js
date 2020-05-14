@@ -21,9 +21,11 @@ const processTheme = (instance, themeKey) => {
 };
 
 export const UIProvider = (props) => {
-  const { instance, theme, themes } = props;
+  const { instance, theme } = props;
 
-  const { paletteKey, defaultTheme } = instance.props.options;
+  const { paletteKey, themes } = instance.props.options.theming;
+
+  const defaultTheme = Object.keys(themes)[0];
 
   const [themeKey, setTheme] = useState(themes[theme] ? theme : defaultTheme);
 
@@ -44,19 +46,38 @@ export const UIProvider = (props) => {
   return (
     <Context.Provider
       value={{
-        generateUI: (p, ignored = [], options = {}) => {
-          const { scope } = options;
+        generateUI: (p, localKeys = [], options = {}) => {
+          const { scope, fast = true } = options;
 
           const active = instance.active(p);
 
+          const {
+            props: _props,
+            global: _global,
+            local: _local,
+            interactives: _interactives,
+          } = instance.properties(p, localKeys, true);
+
           const props = {
-            ...instance.properties(p, ignored),
             __active: active,
+            ..._props,
+            _safe: _props,
+            _theme: {
+              ...themeProps,
+            },
+            _global: {
+              ..._global,
+            },
+            _interactives: {
+              ..._interactives,
+            },
+            _local: {
+              ..._local,
+            },
           };
 
           return {
             props,
-            themeProps,
             theme: generatedTheme.current,
             themeKey,
             mode,
@@ -83,15 +104,15 @@ export const UIProvider = (props) => {
             },
             closest: (prop = "", value) => {
               const [key, variant] = prop.split(".");
-
-              return instance.closest(
+              const next = instance.closest(
                 key,
-                variant ? variant : key,
+                variant ? active[key].variant : active[key].key,
                 value,
                 variant ? true : false,
               );
+
+              return next;
             },
-            _getExpensiveProps: () => instance.properties(this.props, []),
           };
         },
       }}

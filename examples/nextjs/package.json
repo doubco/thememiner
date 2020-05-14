@@ -13,7 +13,8 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "styled-components": "^5.1.0",
-    "theme-miner": "^2.0.2",
+    "theme-miner": "^2.0.4",
+    "tinycolor2": "^1.4.1",
     "world-i18n": "^1.1.4"
   },
   "prettier": {

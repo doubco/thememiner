@@ -7,6 +7,7 @@ import { createGlobalStyle } from "styled-components";
 import { WorldProvider } from "world-i18n/lib/react";
 
 import { UIProvider } from "theme-miner/lib/react/styled-components";
+// import { UIProvider } from "../theme-miner/react/styled-components";
 
 import { UI } from "../ui";
 import { world } from "../world";
@@ -48,16 +49,10 @@ class MyApp extends App {
         <DocumentStyle />
         <WorldProvider instance={world}>
           <UIProvider
+            // pass the UI aka ThemeMiner Instance
             instance={UI}
+            // this is the active theme, you can fetch it from cookie or local storage
             theme={theme}
-            themes={{
-              white: {
-                mode: "light",
-              },
-              black: {
-                mode: "dark",
-              },
-            }}
           >
             <Component {...pageProps} />
           </UIProvider>

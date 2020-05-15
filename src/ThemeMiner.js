@@ -21,6 +21,16 @@ const ref = (obj, str) => {
   return null;
 };
 
+const nest = (key, value) => {
+  let object = {};
+  let arr = key.split(".");
+  for (let i = 0; i < arr.length; i++) {
+    object = object[arr[i]] = {};
+  }
+  object[arr[arr.length - 1]] = value;
+  return object;
+};
+
 class ThemeMiner {
   constructor(props = {}) {
     this.setProps(props);
@@ -138,39 +148,39 @@ class ThemeMiner {
     INTERNAL VARIABLE COLLECTOR
     Collects ui props by key.
   */
-  vars(key, props, active) {
-    const { theme, options } = this.props;
-    let prepared = {};
 
-    if (theme[key]) {
-      const keys = Object.keys(active);
-      for (const k in theme[key]) {
-        if (keys.includes(k)) {
-          let a = active[k];
+  vars(path, active) {
+    const { theme, interactives, options } = this.props;
+    let prepared;
 
-          if (a) {
-            if (a.variant) {
-              prepared[k] = ref(theme, `${key}.${k}.${a.key}`) || {};
-              prepared[k][options.activeKey] = ref(
-                theme,
-                `${key}.${k}.${a.key}.${a.variant}`,
-              );
-            } else {
-              // prepared[k] = ref(theme, `${key}.${k}.${a.key}`);
-              prepared[k] = ref(theme, `${key}.${k}`) || {};
-              prepared[k][options.activeKey] = ref(
-                theme,
-                `${key}.${k}.${a.key}`,
-              );
-            }
-          }
-        } else {
-          prepared[k] = theme[key][k];
-        }
+    const splitted = path.split(".");
+    const interactiveKey = splitted[splitted.indexOf(options.activeKey) - 1];
+
+    if (interactives[interactiveKey]) {
+      const a = active[interactiveKey];
+      const [beforeActive, afterActive] = path.split(`.${options.activeKey}`);
+      let parentPath = beforeActive;
+      let activePath = "";
+      if (a.variant) {
+        activePath = `${a.key}.${a.variant}`;
+      } else {
+        activePath = `${a.key}`;
+      }
+      const current = ref(theme, `${parentPath}.${activePath}`);
+
+      prepared = ref(theme, parentPath) || {};
+      prepared[options.activeKey] = current;
+
+      if (parentPath.split(".").length > 1) {
+        prepared = nest(parentPath, prepared);
       }
     }
 
-    return prepared;
+    if (prepared) {
+      return prepared;
+    } else {
+      return path;
+    }
   }
 
   /*
@@ -247,9 +257,8 @@ class ThemeMiner {
     STYLE HELPER
     Resolves and get props of given key.
     Examples:
-    Theme.style(`buttons.size.padding`, ({ button, theme, active, props }) => {})
   */
-  style(input, keys = this.props.keys.theme) {
+  style(input) {
     const { theme } = this.props;
     let type;
 
@@ -277,32 +286,23 @@ class ThemeMiner {
         let scope;
         if (type == "array" || type == "string") {
           // use prefix if the parent key is in interactives
-          if (theme.__interactives[input.split(".")[0]]) {
-            input = `__interactives.${input}`;
-          }
           scope = input;
         }
 
         if (scope) {
-          scope = scope.split(".")[0];
-          if (theme[scope]) keys = scope;
+          scope = input.split(".")[0];
 
-          if (scope == "props") keys = 0;
-          if (scope == "theme") keys = 0;
-        }
+          if (scope == "props") scope = false;
+          if (scope == "theme") scope = false;
 
-        if (keys) {
-          active =
-            !props._disableCache && props.__active
-              ? props.__active
-              : this.active(props);
-          if (isArray(keys)) {
-            keys.forEach((k) => (vars[k] = this.vars(k, props, active)));
-          } else if (isString(keys)) {
-            vars[keys] = this.vars(keys, props, active);
+          if (scope) {
+            active =
+              !props._disableCache && props.__active
+                ? props.__active
+                : this.active(props);
+            vars[scope] = this.vars(input, active);
           }
         }
-
         x = { ...vars, theme, active, props, __generated: true };
       }
 
@@ -421,15 +421,13 @@ class ThemeMiner {
     Object.keys(interactives).forEach((key) => {
       let i = interactives[key];
       interactivesKeys = [...interactivesKeys, key];
-
+      if (i.variants) {
+        interactivesKeys = [...interactivesKeys, i.variants.key];
+      }
       if (options.useOptions) {
         interactivesKeys = [...interactivesKeys, ...i.options];
         if (i.variants) {
-          interactivesKeys = [
-            ...interactivesKeys,
-            i.variants.key,
-            ...i.variants.options,
-          ];
+          interactivesKeys = [...interactivesKeys, ...i.variants.options];
         }
       }
     });
@@ -499,7 +497,7 @@ class ThemeMiner {
           }
           result += pieces[x];
         }
-        // console.log(result);
+
         let response = "";
         try {
           response = new Function("return " + result)();

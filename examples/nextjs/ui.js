@@ -39,6 +39,12 @@ const primary = {
   "sh+2": "#1f4ba4",
 };
 
+const spacing = {
+  "sp+0": 0,
+  "sp+1": 8,
+  "sp+2": 16,
+};
+
 // tokens
 const tokens = {
   palette: {
@@ -138,16 +144,9 @@ const tokens = {
     "ra+1": 4,
     "ra+2": 8,
   },
-  padding: {
-    "sp+0": 0,
-    "sp+1": 8,
-    "sp+2": 12,
-  },
-  margin: {
-    "sp+0": 0,
-    "sp+1": 8,
-    "sp+2": 16,
-  },
+  spacing,
+  padding: spacing,
+  margin: spacing,
 };
 
 // component variables
@@ -198,6 +197,10 @@ const interactives = {
       options: ["sh-2", "sh-1", "sh+0", "sh+1", "sh+2"],
       default: "sh+0",
     },
+  },
+  spacing: {
+    options: ["sp+0", "sp+1", "sp+2"],
+    default: "sp+0",
   },
   margin: {
     options: ["sp+0", "sp+1", "sp+2"],

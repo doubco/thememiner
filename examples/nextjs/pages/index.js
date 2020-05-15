@@ -18,7 +18,7 @@ const Viewport = styled.div`
   justify-content: center;
   background: #ccc;
   /* if mixin doesn't need or use the interactives, you need the run the under function like below */
-  ${mixin("debug")({ color: "blue" })}
+  /* ${mixin("debug")({ color: "blue" })} */
 `;
 
 const Box = styled.div`
@@ -35,6 +35,8 @@ const Box = styled.div`
 const Button = styled.div`
   cursor: pointer;
   margin: ${t`margin.active``px`};
+  padding: ${t`padding.active``px`};
+
   border-radius: ${t`radius.active``px`};
 
   background: ${mixin`paint``palette.active`};
@@ -47,7 +49,7 @@ const Button = styled.div`
     background: ${mixin`asActive``palette.active`};
   }
 
-  height: ${button`scale.active.height``px`};
+  min-height: ${button`scale.active.height``px`};
 
   width: 200px;
   display: flex;
@@ -89,18 +91,15 @@ const ButtonDemo = (props) => {
   return (
     <Button
       // this will pass all theme-miner related props to this component
-      {...ui.props._interactives}
+      {...ui.props._safe}
       // this will get the current shade and overwrite it with lighter one.
       $shade={ui.closest("palette.shade", -2)}
-      // this will remove the cache.
-
-      $margin="sp+2"
       $radius="ra+1"
     >
       <Text
         // you can use more convenient but a bit expensive version of ui.props
         // __active object is not included so it won't used cache
-        {...ui.props._clean}
+        {...ui.props._safe}
         $negative
         $size="ty-2"
       >
@@ -149,8 +148,8 @@ export default (props) => {
         <Text $negative {...ui.props._theme} $size="ty-1" $opacity="op-2">
           {t("hello-description")}
         </Text>
-        <ButtonDemo $shade={"sh+2"} />
-        <Button $color="#ff0000" $margin="sp+2" $radius="ra+1">
+        <ButtonDemo $shade={"sh+2"} $padding="sp+2" $margin="sp+1" />
+        <Button $color="#ff0000" $margin="sp+0" $radius="ra+1">
           {/* this text will inherit the css color property from the parent, but default it will the default pallete active color  */}
           <Text $inherit $size="ty-2">
             {t("click-me")}

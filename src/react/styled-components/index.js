@@ -74,19 +74,14 @@ export const UIProvider = (props) => {
           const props = {
             __active: active,
             ..._props,
-            _safe: _props,
-            _theme: {
-              ...themeProps,
-            },
-            _global: {
-              ..._global,
-            },
-            _interactives: {
-              ..._interactives,
-            },
-            _local: {
-              ..._local,
-            },
+            ..._local,
+            ..._global,
+            _safe: { ..._props, ..._local, ..._global },
+            _global: { ..._global },
+            _interactives: { ..._interactives },
+            _parent: { ..._props },
+            _local: { ..._local },
+            _theme: { ...themeProps },
           };
 
           return {

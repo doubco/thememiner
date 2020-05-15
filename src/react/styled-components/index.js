@@ -59,10 +59,17 @@ export const UIProvider = (props) => {
   return (
     <Context.Provider
       value={{
-        generateUI: (p, localKeys = [], options = {}) => {
-          const { scope, fast = true } = options;
+        generateUI: (pr, localKeys = [], options = {}, overwrite) => {
+          const { scope, cache } = options;
+
+          let p = pr;
 
           const active = instance.active(p);
+          const __active = cache ? active : null;
+
+          if (overwrite) {
+            p = { ...pr, ...overwrite(active) };
+          }
 
           const {
             props: _props,
@@ -72,11 +79,10 @@ export const UIProvider = (props) => {
           } = instance.properties(p, localKeys, true);
 
           const props = {
-            __active: active,
+            __active,
             ..._props,
             ..._local,
             ..._global,
-            _safe: { ..._props, ..._local, ..._global },
             _global: { ..._global },
             _interactives: { ..._interactives },
             _parent: { ..._props },

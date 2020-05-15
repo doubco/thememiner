@@ -34,6 +34,7 @@ export default [
     ],
   },
   {
+    external: ["react", "styled-components"],
     input: "./src/react/styled-components/index.js",
     output: [
       {

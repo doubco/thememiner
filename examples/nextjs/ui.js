@@ -1,5 +1,5 @@
-import { ThemeMiner } from "theme-miner";
-// import ThemeMiner from "./theme-miner";
+// import { ThemeMiner } from "theme-miner";
+import ThemeMiner from "./theme-miner/ThemeMiner";
 
 import { css } from "styled-components";
 import tinycolor from "tinycolor2";
@@ -215,6 +215,7 @@ const options = {
   // globally auto passed properties
   properties: ["$debug"],
   theming: {
+    default: "white",
     paletteKey: "palette",
     themes: {
       white: {
@@ -253,18 +254,16 @@ const ui = new ThemeMiner({
     debug: (
       instance,
       props,
-      value,
-      { useProps, disco = false, style, width } = {},
+      { useProps, disco = false, style, width, color } = {},
     ) => {
       const styles = ["dashed", "dotted", "solid"];
-
       // When disco mode on you will get 'Warning: Prop `className` did not match. Server' error on client side
       const borderWidth = width || 2;
       const borderStyle = disco ? styles[random(0, 2)] : style || "solid";
       const borderColor = disco
         ? `rgb(${random(0, 255)}, ${random(0, 255)}, ${random(0, 255)})`
-        : value
-        ? value
+        : color
+        ? color
         : `red`;
 
       let nextValue = css`

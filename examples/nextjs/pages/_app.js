@@ -6,8 +6,8 @@ import Head from "next/head";
 import { createGlobalStyle } from "styled-components";
 import { WorldProvider } from "world-i18n/lib/react";
 
-import { UIProvider } from "theme-miner/lib/react/styled-components";
-// import { UIProvider } from "../theme-miner/react/styled-components";
+// import { UIProvider } from "theme-miner/lib/react/styled-components";
+import { UIProvider } from "../theme-miner/react/styled-components";
 
 import { UI } from "../ui";
 import { world } from "../world";

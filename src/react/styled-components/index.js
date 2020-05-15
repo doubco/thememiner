@@ -6,7 +6,6 @@ import React, {
   useContext,
 } from "react";
 import { ThemeProvider } from "styled-components";
-import { UI } from "../../../examples/nextjs/ui";
 
 const Context = createContext();
 

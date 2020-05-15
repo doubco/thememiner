@@ -371,7 +371,12 @@ class ThemeMiner {
           const value = this.style(key)(p);
           const instance = this;
           if (this.mixins[mixin]) {
-            return this.mixins[mixin](instance, props, value, ...args);
+            return this.mixins[mixin](
+              instance,
+              props,
+              value ? value : key,
+              ...args,
+            );
           } else {
             throw Error(
               `Missing mixin: ${mixin}. Please add this mixin function to mixins.${mixin} in your ThemeMiner instance.`,

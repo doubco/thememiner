@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 
-import { useUI } from "theme-miner/lib/react/styled-components";
-// import { useUI } from "../theme-miner/react/styled-components";
+// import { useUI } from "theme-miner/lib/react/styled-components";
+import { useUI } from "../theme-miner/react/styled-components";
 
 // styled components
 import { UI } from "../ui";
@@ -18,7 +18,7 @@ const Viewport = styled.div`
   justify-content: center;
   background: #ccc;
   /* if mixin doesn't need or use the interactives, you need the run the under function like below */
-  ${mixin("debug")()}
+  ${mixin("debug")({ color: "blue" })}
 `;
 
 const Box = styled.div`

@@ -2,3 +2,4 @@ bundles
 node_modules
 .next
 yarn.lock
+theme-miner

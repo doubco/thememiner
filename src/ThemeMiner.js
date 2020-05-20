@@ -15,7 +15,9 @@ const ref = (obj, str) => {
     for (let i = 0; i < str.length; i++) {
       obj = obj[str[i]] ? obj[str[i]] : obj[str[i]] === 0 ? 0 : { empty: true };
     }
+
     if (obj && obj.empty) return null;
+
     return obj;
   }
   return null;
@@ -103,27 +105,21 @@ class ThemeMiner {
       this.setTheme(props.options.theming.default);
     }
 
+    const processTheme = props.processTheme;
+
     const interactives = {
       ...props.interactives,
     };
-
-    let __interactives = {};
-
-    Object.keys(interactives).forEach((k) => {
-      __interactives[k] = theme[k];
-    });
 
     this.props = {
       keys: {
         theme: Object.keys(theme),
         interactives: Object.keys(interactives),
       },
-      theme: {
-        ...theme,
-        __interactives,
-      },
+      theme,
       options,
       interactives,
+      processTheme,
     };
 
     this.mixins = {};

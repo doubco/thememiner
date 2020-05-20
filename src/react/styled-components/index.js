@@ -9,11 +9,11 @@ import { ThemeProvider } from "styled-components";
 
 const Context = createContext();
 
-const processTheme = (instance, themeKey) => {
+const onGenerateTheme = (instance, themeKey) => {
   let theme = instance.props.theme;
 
-  if (instance.processTheme) {
-    theme = instance.processTheme(instance, themeKey);
+  if (instance.props.onGenerateTheme) {
+    theme = instance.props.onGenerateTheme(instance, themeKey);
     instance.setProps({ theme });
   }
 
@@ -51,10 +51,10 @@ export const UIProvider = (props) => {
   const mode = themes[themeKey].mode;
 
   useEffect(() => {
-    generatedTheme.current = processTheme(instance, themeKey);
+    generatedTheme.current = onGenerateTheme(instance, themeKey);
   }, [instance, themeKey]);
 
-  const generatedTheme = useRef(processTheme(instance, themeKey));
+  const generatedTheme = useRef(onGenerateTheme(instance, themeKey));
 
   return (
     <Context.Provider

@@ -105,7 +105,7 @@ class ThemeMiner {
       this.setTheme(props.options.theming.default);
     }
 
-    const processTheme = props.processTheme;
+    const onGenerateTheme = props.onGenerateTheme;
 
     const interactives = {
       ...props.interactives,
@@ -119,7 +119,7 @@ class ThemeMiner {
       theme,
       options,
       interactives,
-      processTheme,
+      onGenerateTheme,
     };
 
     this.mixins = {};

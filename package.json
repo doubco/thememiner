@@ -1,6 +1,6 @@
 {
   "name": "theme-miner",
-  "version": "2.1.5",
+  "version": "2.1.8",
   "description": "ThemeMiner is the missing piece for styled-components.",
   "author": "Doub.co <hi@doub.co>",
   "main": "lib/index.js",

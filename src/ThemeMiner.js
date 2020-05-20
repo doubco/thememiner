@@ -35,6 +35,35 @@ const nest = (key, value) => {
 
 class ThemeMiner {
   constructor(props = {}) {
+    this.props = {
+      keys: {},
+      options: {
+        paletteKey: "palette",
+
+        properties: [],
+        useOptions: true,
+        useVariants: true,
+        useTransient: true,
+        activeKey: "active",
+        operators: {
+          transient: "$",
+          nin: " nin ",
+          in: " in ",
+          ne: " != ",
+          eq: " == ",
+          gt: " > ",
+          gte: " >= ",
+          lt: " < ",
+          lte: " <= ",
+          nset: "!",
+          false: "!!",
+          true: "==",
+        },
+      },
+    };
+
+    this.mixins = {};
+
     this.setProps(props);
 
     this.key = this.key.bind(this);
@@ -73,56 +102,41 @@ class ThemeMiner {
   }
 
   setProps(props = {}) {
-    const theme = props.theme || {};
-
-    const options = {
-      paletteKey: "palette",
-
-      properties: [],
-      useOptions: true,
-      useVariants: true,
-      useTransient: true,
-      activeKey: "active",
-      operators: {
-        transient: "$",
-        nin: " nin ",
-        in: " in ",
-        ne: " != ",
-        eq: " == ",
-        gt: " > ",
-        gte: " >= ",
-        lt: " < ",
-        lte: " <= ",
-        nset: "!",
-        false: "!!",
-        true: "==",
-      },
-      ...props.options,
-    };
-
-    if (props.options.theming) {
-      this.defaultTheme = props.options.theming.default;
-      this.setTheme(props.options.theming.default);
+    if (!this.props.theme) {
+      this.props.theme = {};
+      this.props.keys.theme = [];
     }
 
-    const onGenerateTheme = props.onGenerateTheme;
+    if (props.theme) {
+      this.props.theme = props.theme;
+      this.props.keys.theme = Object.keys(props.theme);
+    }
 
-    const interactives = {
-      ...props.interactives,
-    };
+    if (props.options) {
+      this.props.options = {
+        ...this.props.options,
+        ...props.options,
+      };
 
-    this.props = {
-      keys: {
-        theme: Object.keys(theme),
-        interactives: Object.keys(interactives),
-      },
-      theme,
-      options,
-      interactives,
-      onGenerateTheme,
-    };
+      if (props.options.theming) {
+        this.defaultTheme = props.options.theming.default;
+        this.setTheme(props.options.theming.default);
+      }
+    }
 
-    this.mixins = {};
+    if (props.onGenerateTheme) {
+      this.props.onGenerateTheme = props.onGenerateTheme;
+    }
+
+    if (!this.props.interactives) {
+      this.props.interactives = {};
+      this.props.keys.interactives = [];
+    }
+
+    if (props.interactives) {
+      this.props.interactives = props.interactives;
+      this.props.keys.interactives = Object.keys(props.interactives);
+    }
 
     if (props.mixins) {
       Object.keys(props.mixins).forEach((m) => {

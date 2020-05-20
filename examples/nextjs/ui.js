@@ -240,8 +240,8 @@ const ui = new ThemeMiner({
   },
   interactives,
   options,
-  processTheme: (instance, nextTheme) => {
-    const newTheme = { ...instance.props.theme };
+  onGenerateTheme: (instance, nextTheme) => {
+    let newTheme = { ...instance.props.theme };
 
     // alter theme properties if there is some theme/mode specific changes on tokens or any other variables
     // if (nextTheme === "white") {

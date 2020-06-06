@@ -24,13 +24,22 @@ const ref = (obj, str) => {
 };
 
 const nest = (key, value) => {
-  let object = {};
-  let arr = key.split(".");
-  for (let i = 0; i < arr.length; i++) {
-    object = object[arr[i]] = {};
+  const o = { [key]: value };
+  let oo = {},
+    t,
+    parts,
+    part;
+  for (let k in o) {
+    t = oo;
+    parts = k.split(".");
+    let key = parts.pop();
+    while (parts.length) {
+      part = parts.shift();
+      t = t[part] = t[part] || {};
+    }
+    t[key] = o[k];
   }
-  object[arr[arr.length - 1]] = value;
-  return object;
+  return oo;
 };
 
 class ThemeMiner {
@@ -169,6 +178,10 @@ class ThemeMiner {
   vars(path, active) {
     const { theme, interactives, options } = this.props;
     let prepared;
+    let realPath;
+    const splitted = path.split(".");
+
+    let interactive = splitted[splitted.indexOf(options.activeKey) - 1];
 
     const getActivePath = (interactive) => {
       const a = active[interactive];
@@ -182,42 +195,29 @@ class ThemeMiner {
       return activePath;
     };
 
-    const prepare = (path, current) => {
-      let prepared = { ...(ref(theme, path) || {}) };
-      if (current) prepared[options.activeKey] = current;
-      return prepared;
-    };
-
-    const splitted = path.split(".");
-    const activatedInteractiveKey =
-      splitted[splitted.indexOf(options.activeKey) - 1];
-
-    const nextPath = splitted[splitted.length - 1];
-
-    if (interactives[activatedInteractiveKey]) {
-      const [beforeActive] = path.split(`.${options.activeKey}`);
-      const parentPath = beforeActive;
-      const activePath = getActivePath(activatedInteractiveKey);
-      const current = activePath && ref(theme, `${parentPath}.${activePath}`);
-      prepared = prepare(parentPath, current);
-      if (parentPath.split(".").length > 1) {
-        prepared = nest(parentPath, prepared);
-      }
-    } else if (interactives[path]) {
-      const activePath = getActivePath(path);
-      const current = ref(theme, `${path}.${activePath}`);
-      prepared = prepare(path, current);
-    } else if (nextPath !== path) {
-      prepared = {};
-      const activePath = getActivePath(nextPath);
-      const current = activePath && ref(theme, `${path}.${activePath}`);
-      prepared[nextPath] = prepare(path, current);
+    // active key is used
+    if (interactive) {
+      const activePath = getActivePath(interactive);
+      realPath = `${path.replace(options.activeKey, activePath)}`;
+      prepared = ref(theme, realPath);
     } else {
-      prepared = { ...(ref(theme, path) || {}) };
+      realPath = path;
+      prepared = ref(theme, realPath);
+    }
+
+    interactive = path.split(".").pop();
+    if (this.props.keys.interactives.includes(interactive)) {
+      if (!path.includes(options.activeKey)) {
+        if (isObject(prepared)) {
+          const activePath = `${path}.${getActivePath(interactive)}`;
+          const activeData = ref(theme, activePath);
+          prepared[options.activeKey] = activeData;
+        }
+      }
     }
 
     if (prepared) {
-      return prepared;
+      return nest(path, prepared);
     } else {
       return path;
     }
@@ -340,7 +340,7 @@ class ThemeMiner {
               !props._disableCache && props.__active
                 ? props.__active
                 : this.active(props);
-            vars[scope] = this.vars(input, active);
+            vars = { ...vars, ...this.vars(input, active) };
           }
         }
         x = { ...vars, theme, active, props, __generated: true };

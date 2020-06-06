@@ -79,17 +79,37 @@ const ButtonDemo = (props) => {
   // ui.props._glocal instead of ui.props => this will return only the glocal props data e.g. ThemeMiner.properties
   // ui.props._interactives instead of ui.props => this will return only the interactives props data
 
-  const allMargins = ui.get("margin");
-  const currentMargin = ui.get("margin.active");
-  const activeButtonTokens = ui.get("button.scale.active");
-  const allButtonTokens = ui.get("button.scale");
+  const data = {
+    // simple
+    margin: ui.get("margin"),
+    "margin.active": ui.get("margin.active"),
+    // with variant
+    typography: ui.get("typography"),
+    "typography.active": ui.get("typography.active"),
+    "typography.active.size": ui.get("typography.active.size"),
+    //  with variant direct
+    "typography.default": ui.get("typography.default"),
+    "typography.default.ty+0.size": ui.get("typography.default.ty+0.size"),
+    palette: ui.get("palette"),
+    "palette.active": ui.get("palette.active"),
+    //  with variant direct
+    "palette.primary": ui.get("palette.primary"),
+    "palette.primary.sh+0": ui.get("palette.primary.sh+0"),
+    "palette.primary.contrast": ui.get("palette.primary.contrast"),
+    "palette.primary.contrast.sh+0": ui.get("palette.primary.contrast.sh+0"),
+    // middle
+    "button.scale.active": ui.get("button.scale.active"),
+    "button.scale.active.height": ui.get("button.scale.active.height"),
+    "button.scale": ui.get("button.scale"),
+    "button.scale.sc+1": ui.get("button.scale.sc+1"),
+    "button.scale.sc+1.height": ui.get("button.scale.sc+1.height"),
+    // generic
 
-  console.log("prop mine test", {
-    allMargins,
-    currentMargin,
-    activeButtonTokens,
-    allButtonTokens,
-  });
+    "theme.button": ui.get("theme.button"),
+    "props.$margin": ui.get("props.$margin"),
+  };
+
+  console.log("prop mine test", data);
 
   return (
     <Button

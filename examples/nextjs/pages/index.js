@@ -75,34 +75,31 @@ const ButtonDemo = (props) => {
   const { t, locale } = useWorld();
   const ui = useUI(props);
 
-  // ui.props has special object '__active' which includes all processed verisons of all theme-miner props
-  // this is for performans reasons
-  // when you try to alter it you have to tell theme-miner to ignore previous processed data and re-run by adding
-  // ui.props._safe instead of ui.props
-  // alternatively depens on the use case you can use
-
   // ui.props._local instead of ui.props => this will return only the local props data
   // ui.props._glocal instead of ui.props => this will return only the glocal props data e.g. ThemeMiner.properties
   // ui.props._interactives instead of ui.props => this will return only the interactives props data
 
-  // or
-  // you could just simple wont use it at all
+  const allMargins = ui.get("margin");
+  const currentMargin = ui.get("margin.active");
+  const activeButtonTokens = ui.get("button.scale.active");
+  const allButtonTokens = ui.get("button.scale");
+
+  console.log("prop mine test", {
+    allMargins,
+    currentMargin,
+    activeButtonTokens,
+    allButtonTokens,
+  });
 
   return (
     <Button
       // this will pass all theme-miner related props to this component
-      {...ui.props._safe}
+      {...ui.props}
       // this will get the current shade and overwrite it with lighter one.
       $shade={ui.closest("palette.shade", -2)}
       $radius="ra+1"
     >
-      <Text
-        // you can use more convenient but a bit expensive version of ui.props
-        // __active object is not included so it won't used cache
-        {...ui.props._safe}
-        $negative
-        $size="ty-2"
-      >
+      <Text {...ui.props} $negative $size="ty-2">
         {t("click-me")}
       </Text>
     </Button>
@@ -148,8 +145,8 @@ export default (props) => {
         <Text $negative {...ui.props._theme} $size="ty-1" $opacity="op-2">
           {t("hello-description")}
         </Text>
-        <ButtonDemo $shade={"sh+2"} $padding="sp+2" $margin="sp+1" />
-        <Button $color="#ff0000" $margin="sp+0" $radius="ra+1">
+        <ButtonDemo $shade={"sh+2"} $padding="sp+2" $margin="sp+2" />
+        <Button $color="#ff0000" $margin="sp+2" $radius="ra+1">
           {/* this text will inherit the css color property from the parent, but default it will the default pallete active color  */}
           <Text $inherit $size="ty-2">
             {t("click-me")}

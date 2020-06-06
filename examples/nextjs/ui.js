@@ -240,6 +240,9 @@ const ui = new ThemeMiner({
   },
   interactives,
   options,
+  onThemeChange: (themeKey) => {
+    console.log("theme changed", themeKey);
+  },
   onGenerateTheme: (instance, nextTheme) => {
     let newTheme = { ...instance.props.theme };
 

@@ -88,6 +88,9 @@ class ThemeMiner {
 
   setTheme(name) {
     this.currentTheme = name;
+    if (this.props.onThemeChange) {
+      this.props.onThemeChange(this.currentTheme);
+    }
   }
 
   checkTheme(theme) {
@@ -128,6 +131,10 @@ class ThemeMiner {
       this.props.onGenerateTheme = props.onGenerateTheme;
     }
 
+    if (props.onThemeChange) {
+      this.props.onThemeChange = props.onThemeChange;
+    }
+
     if (!this.props.interactives) {
       this.props.interactives = {};
       this.props.keys.interactives = [];
@@ -163,27 +170,50 @@ class ThemeMiner {
     const { theme, interactives, options } = this.props;
     let prepared;
 
-    const splitted = path.split(".");
-    const interactiveKey = splitted[splitted.indexOf(options.activeKey) - 1];
+    const getActivePath = (interactive) => {
+      const a = active[interactive];
 
-    if (interactives[interactiveKey]) {
-      const a = active[interactiveKey];
-      const [beforeActive, afterActive] = path.split(`.${options.activeKey}`);
-      let parentPath = beforeActive;
       let activePath = "";
       if (a.variant) {
         activePath = `${a.key}.${a.variant}`;
       } else {
         activePath = `${a.key}`;
       }
-      const current = ref(theme, `${parentPath}.${activePath}`);
+      return activePath;
+    };
 
-      prepared = ref(theme, parentPath) || {};
-      prepared[options.activeKey] = current;
+    const prepare = (path, current) => {
+      let prepared = { ...(ref(theme, path) || {}) };
+      if (current) prepared[options.activeKey] = current;
+      return prepared;
+    };
 
+    const splitted = path.split(".");
+    const activatedInteractiveKey =
+      splitted[splitted.indexOf(options.activeKey) - 1];
+
+    const nextPath = splitted[splitted.length - 1];
+
+    if (interactives[activatedInteractiveKey]) {
+      const [beforeActive] = path.split(`.${options.activeKey}`);
+      const parentPath = beforeActive;
+      const activePath = getActivePath(activatedInteractiveKey);
+      const current = activePath && ref(theme, `${parentPath}.${activePath}`);
+      prepared = prepare(parentPath, current);
       if (parentPath.split(".").length > 1) {
         prepared = nest(parentPath, prepared);
       }
+    } else if (interactives[path]) {
+      const activePath = getActivePath(path);
+      const current = ref(theme, `${path}.${activePath}`);
+      prepared = prepare(path, current);
+    } else if (nextPath !== path) {
+      prepared = {};
+      const activePath = getActivePath(nextPath);
+      const current = activePath && ref(theme, `${path}.${activePath}`);
+      prepared[nextPath] = prepare(path, current);
+    } else {
+      prepared = { ...(ref(theme, path) || {}) };
     }
 
     if (prepared) {

@@ -83,6 +83,7 @@ const ButtonDemo = (props) => {
     // simple
     margin: ui.get("margin"),
     "margin.active": ui.get("margin.active"),
+    "margin.active.0": ui.get("margin.active", { $margin: null }),
     // with variant
     typography: ui.get("typography"),
     "typography.active": ui.get("typography.active"),

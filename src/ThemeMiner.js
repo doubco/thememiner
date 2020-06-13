@@ -216,7 +216,7 @@ class ThemeMiner {
       }
     }
 
-    if (prepared) {
+    if (prepared !== null || prepared !== undefined) {
       return nest(path, prepared);
     } else {
       return path;

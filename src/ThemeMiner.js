@@ -6,7 +6,7 @@ import {
   isNumber,
   isFunction,
   isColor,
-} from "wtf-is-this";
+} from "@doubco/wtf";
 
 const ref = (obj, str) => {
   if (isString(str) && isObject(obj)) {

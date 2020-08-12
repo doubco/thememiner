@@ -1,6 +1,6 @@
 {
-  "name": "theme-miner",
-  "version": "2.2.1",
+  "name": "@doubco/thememiner",
+  "version": "2.2.3",
   "description": "ThemeMiner is the missing piece for styled-components.",
   "author": "Doub.co <hi@doub.co>",
   "main": "lib/index.js",
@@ -13,7 +13,7 @@
   },
   "commonjs": "lib/index.cjs.js",
   "module": "lib/index.es.js",
-  "repository": "https://github.com/doubco/theme-miner.git",
+  "repository": "https://github.com/doubco/thememiner.git",
   "license": "MIT",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -23,7 +23,7 @@
     "prepare": "npm run build"
   },
   "dependencies": {
-    "wtf-is-this": "^0.0.5"
+    "@doubco/wtf": "^0.0.6"
   },
   "prettier": {
     "arrowParens": "always",

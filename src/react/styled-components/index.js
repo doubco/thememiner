@@ -50,11 +50,11 @@ export const UIProvider = (props) => {
 
   const mode = themes[themeKey].mode;
 
+  const generatedTheme = useRef(onGenerateTheme(instance, themeKey));
+
   useEffect(() => {
     generatedTheme.current = onGenerateTheme(instance, themeKey);
-  }, [instance, themeKey]);
-
-  const generatedTheme = useRef(onGenerateTheme(instance, themeKey));
+  }, [themeKey]);
 
   return (
     <Context.Provider

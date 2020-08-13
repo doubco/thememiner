@@ -878,6 +878,11 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
+"@doubco/wtf@^0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@doubco/wtf/-/wtf-0.0.6.tgz#b20184dfc4e48544a425029c8a221987e135580a"
+  integrity sha512-LF0Xxj8aDL5B+8MLFYWyH0SuwKl5NNEUAxfcVvV49EWhzcP6ApXpHmSn1vmxfKDrmqUvh+88TGYU1qG7XGoWYQ==
+
 "@types/color-name@^1.1.1":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@types/color-name/-/color-name-1.1.1.tgz#1c1261bbeaa10a8055bbc5d8ab84b7b2afc846a0"
@@ -2489,8 +2494,3 @@ write@1.0.3:
   integrity sha512-/lg70HAjtkUgWPVZhZcm+T4hkL8Zbtp1nFNOn3lRrxnlv50SRBv7cR7RqR+GMsd3hUXy9hWBo4CHTbFTcOYwig==
   dependencies:
     mkdirp "^0.5.1"
-
-wtf-is-this@^0.0.5:
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/wtf-is-this/-/wtf-is-this-0.0.5.tgz#938502e03f9a31cb92d20813d5b11ee8bb7ddbf4"
-  integrity sha512-zFq0o7VF9ywnsA/pfG0Y9Py0pmafZxHKjtbOOi7nTccjgmYnyvdqKV4kAKUv7AjDVazKtBGRsQfn80WpEYKqrg==

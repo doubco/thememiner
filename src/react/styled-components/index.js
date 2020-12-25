@@ -52,6 +52,7 @@ export const UIProvider = (props) => {
 
   useEffect(() => {
     generatedTheme.current = onGenerateTheme(instance, themeKey);
+    instance.setTheme(themeKey);
   }, [instance, themeKey]);
 
   const generatedTheme = useRef(onGenerateTheme(instance, themeKey));
@@ -102,7 +103,7 @@ export const UIProvider = (props) => {
                 setUpdating(true);
                 setTheme(theme);
 
-                instance.setTheme(theme);
+                // instance.setTheme(theme);
 
                 setTimeout(() => {
                   setUpdating(false);
@@ -117,6 +118,9 @@ export const UIProvider = (props) => {
               } else {
                 return instance._(key)({ ...props, ...customProps });
               }
+            },
+            mixin: (mixin, ...args) => {
+              return instance.mixin(mixin, ...args);
             },
             closest: (prop = "", value) => {
               const [key, variant] = prop.split(".");

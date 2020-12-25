@@ -1,6 +1,6 @@
 # ThemeMiner ⛏
 
-> ⚠️ v2 docs is comming very soon...
+> ⚠️ THIS IS FOR V1 ONLY ⚠️
 
 ThemeMiner is the missing piece for styled-components.
 
